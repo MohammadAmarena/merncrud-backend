@@ -1,0 +1,7 @@
+@url = http://localhost:3001
+
+### get Api
+{{url}}
+
+### get Books
+{{url}}/book
