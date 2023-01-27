@@ -1,14 +1,27 @@
 import { Book } from './models/Book.js'
 import { IBook } from './interfaces.js'
+import express from 'express'
+import mongoose from 'mongoose'
+import * as config from './config.js'
 
-export const getBooks = async () => {
-	return new Promise( async (resolve, reject) => {
+export const connection = async () => {
+    try {
+        await mongoose.connect(config.MONGODB_CONNECTION)
+        console.log('connected to MongoDB');
+        
+    } catch (e: any) {
+        console.error(e.message);
+        
+    }
+}
+
+export const getBooks = async (req: express.Request, res: express.Response) => {
+	const book = new Promise( async (resolve, reject) => {
 		try {
 			const books: IBook[] = await Book.find();
             
 			if (books.length > 0) {
-				resolve(books);
-            
+                resolve(books);
 			} else {
 				reject({
 					status: "error",
@@ -20,6 +33,7 @@ export const getBooks = async () => {
 			console.error(e);
 		}
 	})
+    res.send(await book)
 }
 
 export const getApiDocumintation = () => {
@@ -44,7 +58,7 @@ export const getApiDocumintation = () => {
         <h1>Api Docs.</h1>
         <ul>
             <li>
-                <a href='/book'>/books</a> Get all books
+                <a href='/books'>/books</a> Get all books
             </li>
         </ul>
     `
