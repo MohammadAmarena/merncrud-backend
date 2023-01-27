@@ -4,6 +4,7 @@ import * as config from './config.js'
 import * as model from './model.js'
 const app = express()
 import mongoose from 'mongoose'
+import { IBook } from './interfaces.js'
 
 
 mongoose.set('strictQuery', false)
@@ -26,14 +27,8 @@ app.get('/', (req: express.Request, res: express.Response) => {
 });
 
 app.get('/book', async (req: express.Request, res: express.Response) => {
-	try {
-		const book = (await model.getBook());
-		res.json(book);
-		
-	}
-	catch (e) {
-		res.status(500).send(e);
-	}
+	const book = await model.getBooks();
+	res.send(book);
 });
 
 app.listen(config.PORT, () => {

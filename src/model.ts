@@ -1,4 +1,26 @@
-import {book} from './models/books.js'
+import { Book } from './models/Book.js'
+import { IBook } from './interfaces.js'
+
+export const getBooks = async () => {
+	return new Promise( async (resolve, reject) => {
+		try {
+			const books: IBook[] = await Book.find();
+            
+			if (books.length > 0) {
+				resolve(books);
+            
+			} else {
+				reject({
+					status: "error",
+					message: "collection not found"
+				});
+			}
+		}
+		catch (e) {
+			console.error(e);
+		}
+	})
+}
 
 export const getApiDocumintation = () => {
     return `
@@ -26,25 +48,4 @@ export const getApiDocumintation = () => {
             </li>
         </ul>
     `
-}
-
-export const getBook = async () => {
-	return new Promise( async (resolve, reject) => {
-		try {
-			const books = await book.find();
-            
-			if (books.length > 0) {
-				resolve(books);
-                
-			} else {
-				reject({
-					status: "error",
-					message: "collection not found"
-				});
-			}
-		}
-		catch (e) {
-			console.error(e);
-		}
-	})
 }
