@@ -33,27 +33,19 @@ export const getBooks = async (req: express.Request, res: express.Response) => {
 			console.error(e);
 		}
 	})
-    res.send(await book)
+    res.json(await book)
 }
 
-export const getApiDocumintation = () => {
-    return `
+export const getApiDocumentation = (req: express.Request, res: express.Response) => {
+    const apiDocumentation = `
         <style>
-            body {
-                background-color: #333;
-                font-family: courier;
-            }
-            ul {
-                background-color: #111;
-                padding: 1rem;
-            }
-            li {
-                font-size: 1.3rem;
-                color: gray;
-            }
-            a {
-                color: yellow;
-            }
+            body { background-color: #333;
+                font-family: courier; }
+            ul { background-color: #111;
+                padding: 1rem; }
+            li { font-size: 1.3rem;
+                color: gray; }
+            a { color: indianred; }
         </style>
         <h1>Api Docs.</h1>
         <ul>
@@ -62,4 +54,5 @@ export const getApiDocumintation = () => {
             </li>
         </ul>
     `
+    res.send(apiDocumentation);
 }
