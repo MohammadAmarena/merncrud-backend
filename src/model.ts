@@ -58,6 +58,21 @@ export const addBook = async (req: express.Request, res: express.Response) => {
     res.send(await book)
 }
 
+export const updateBook = async (req: express.Request, res: express.Response) => {
+    const _id = req.params.id;
+	const book: IBook = req.body;
+    const oldBook = await Book.find({ _id });
+
+	await Book.updateOne({ _id }, { $set: { ...book } });
+
+	const newBook = await Book.find({ _id });
+    
+	res.status(200).send({
+        oldBook: oldBook,
+		result: newBook
+	});
+}
+
 export const getApiDocumentation = (req: express.Request, res: express.Response) => {
     const apiDocumentation = `
         <style>
