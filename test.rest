@@ -37,3 +37,25 @@ content-type: application/json
     "imageUrl": "http://edwardtanguay.vercel.app/share/images/books/unreason.png",
     "buyUrl": "http://www.amazon.com/The-American-Unreason-Susan-Jacoby/dp/1400096383"
 }
+
+### Pad login
+POST {{url}}/login
+content-type: application/json
+
+{
+    "password": "badPassword"
+}
+
+### Good login
+POST {{url}}/login
+content-type: application/json
+
+{
+    "password": "123"
+}
+
+### Get current user
+{{url}}/get-current-user
+
+### Logout
+{{url}}/logout

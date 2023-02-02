@@ -1,8 +1,18 @@
 import { Book } from './models/Book.js'
 import { IBook } from './interfaces.js'
-import express from 'express'
+import express, { application } from 'express'
 import mongoose from 'mongoose'
 import * as config from './config.js'
+import session from 'express-session'
+import cookieParser from 'cookie-parser'
+import { appendFile } from 'fs'
+
+declare module 'express-session' {
+    export interface SessionData {
+        user: { [key: string]: any}
+    }
+}
+
 
 export const connection = async () => {
     try {
@@ -13,6 +23,28 @@ export const connection = async () => {
         console.error(e.message);
         
     }
+}
+
+export const login =  (req: express.Request, res: express.Response) => {
+    const { password } = req.body
+    if (password === config.ADMIN_PASSWORD) {
+        req.session.user = 'admin' as any
+        req.session.cookie.expires = new Date(Date.now() + config.SECONDS_TILL_SESSION_TIMEOUT * 1000)
+        req.session.save()
+        res.status(200).send('OK')
+    } else {
+        res.status(400).send({})
+    }
+}
+
+export const getCurrentUser = (req: express.Request, res: express.Response) => {
+    req.session.user ? res.send(req.session.user) : res.send('anonymousUser')
+}
+
+export const logout = (req: express.Request, res: express.Response) => {
+    req.session.destroy((err) => {
+        err ? res.send('ERROR') : res.send('LOGGED OUT')
+    })
 }
 
 export const getBooks = async (req: express.Request, res: express.Response) => {
