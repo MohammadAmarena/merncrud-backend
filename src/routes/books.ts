@@ -38,10 +38,10 @@ router.get('/books', model.getBooks);
 
 router.get('/books/:id', model.getBook);
 
-router.delete('/books/:id', model.deleteBook);
+router.delete('/books/:id', model.authorizeUser, model.deleteBook);
 
-router.post('/books', model.addBook)
+router.post('/books', model.authorizeUser, model.addBook)
 
-router.put('/books/:id', model.updateBook)
+router.put('/books/:id', model.authorizeUser, model.updateBook)
 
 export default router

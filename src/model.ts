@@ -1,111 +1,117 @@
-import { Book } from './models/Book.js'
-import { IBook } from './interfaces.js'
-import express, { application } from 'express'
-import mongoose from 'mongoose'
-import * as config from './config.js'
-import session from 'express-session'
-import cookieParser from 'cookie-parser'
-import { appendFile } from 'fs'
-
+import { Book } from './models/Book.js';
+import { IBook } from './interfaces.js';
+import express, { application } from 'express';
+import mongoose from 'mongoose';
+import * as config from './config.js';
+import session from 'express-session';
+import cookieParser from 'cookie-parser';
 declare module 'express-session' {
     export interface SessionData {
-        user: { [key: string]: any}
+    user: { [key: string]: any };
     }
 }
-
 
 export const connection = async () => {
     try {
-        await mongoose.connect(config.MONGODB_CONNECTION)
-        console.log('connected to MongoDB');
-        
+    await mongoose.connect(config.MONGODB_CONNECTION);
+    console.log('connected to MongoDB');
     } catch (e: any) {
-        console.error(e.message);
-        
+    console.error(e.message);
     }
-}
+};
 
-export const login =  (req: express.Request, res: express.Response) => {
-    const { password } = req.body
+export const login = (req: express.Request, res: express.Response) => {
+    const { password } = req.body;
     if (password === config.ADMIN_PASSWORD) {
-        req.session.user = 'admin' as any
-        req.session.cookie.expires = new Date(Date.now() + config.SECONDS_TILL_SESSION_TIMEOUT * 1000)
-        req.session.save()
-        res.status(200).send('OK')
+    req.session.user = 'admin' as any;
+    req.session.cookie.expires = new Date(
+      Date.now() + config.SECONDS_TILL_SESSION_TIMEOUT * 1000
+    );
+    req.session.save();
+    res.status(200).send('OK');
     } else {
-        res.status(400).send({})
+    res.status(400).send({});
     }
-}
+};
 
 export const getCurrentUser = (req: express.Request, res: express.Response) => {
-    req.session.user ? res.send(req.session.user) : res.send('anonymousUser')
-}
+    req.session.user ? res.send(req.session.user) : res.send('anonymousUser');
+};
 
 export const logout = (req: express.Request, res: express.Response) => {
     req.session.destroy((err) => {
-        err ? res.send('ERROR') : res.send('LOGGED OUT')
-    })
+    err ? res.send('ERROR') : res.send('LOGGED OUT');
+    });
+};
+
+export const authorizeUser = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    if (req.session.user === 'admin' as any) {
+        next()
+    } else {
+        res.status(401).send({});
+    }
 }
 
 export const getBooks = async (req: express.Request, res: express.Response) => {
-	const book = new Promise( async (resolve, reject) => {
-		try {
-			const books: IBook[] = await Book.find();
-            
-			if (books.length > 0) {
-                resolve(books);
-			} else {
-				reject({
-					status: "error",
-					message: "collection not found"
-				});
-			}
-		}
-		catch (e) {
-			console.error(e);
-		}
-	})
-    res.send(await book)
-}
+    try {
+    const books: IBook[] = await Book.find();
+    if (books.length > 0) {
+        res.send(books);
+    }
+    } catch (e) {
+    console.error(e);
+    }
+};
 
 export const getBook = async (req: express.Request, res: express.Response) => {
-    const id = req.params.id
-    const book = await Book.findOne({ _id: id })
-    book ? res.json(book) : res.send('Book not found')
-}
+    const id = req.params.id;
+    const book = await Book.findOne({ _id: id });
+    book ? res.json(book) : res.send('Book not found');
+};
 
-export const deleteBook = async (req: express.Request, res: express.Response) => {
-    const id = req.params.id
-    const book = await Book.deleteOne({ _id: id })
-    book ? res.json(`book with id ${id} has been deleted`) : res.send('Book not found')
-}
+export const deleteBook = async (
+    req: express.Request,
+    res: express.Response
+) => {
+    const id = req.params.id;
+    const book = await Book.deleteOne({ _id: id });
+    book
+    ? res.json(`book with id ${id} has been deleted`)
+    : res.send('Book not found');
+};
 
 export const addBook = async (req: express.Request, res: express.Response) => {
-    const rowBook: IBook = req.body
+    const rowBook: IBook = req.body;
     const book = new Promise(async (resolve, reject) => {
-		const docBook = new Book(rowBook);
-		const addedDocBook = await docBook.save();
-		resolve(addedDocBook.toObject({ versionKey: false }));
-	});
-    res.send(await book)
-}
+    const docBook = new Book(rowBook);
+    const addedDocBook = await docBook.save();
+    resolve(addedDocBook.toObject({ versionKey: false }));
+    });
+    res.send(await book);
+};
 
-export const updateBook = async (req: express.Request, res: express.Response) => {
+export const updateBook = async (
+    req: express.Request,
+    res: express.Response
+) => {
     const _id = req.params.id;
-	const book: IBook = req.body;
+    const book: IBook = req.body;
     const oldBook = await Book.find({ _id });
 
-	await Book.updateOne({ _id }, { $set: { ...book } });
+    await Book.updateOne({ _id }, { $set: { ...book } });
 
-	const newBook = await Book.find({ _id });
-    
-	res.status(200).send({
-        oldBook: oldBook,
-		result: newBook
-	});
-}
+    const newBook = await Book.find({ _id });
 
-export const getApiDocumentation = (req: express.Request, res: express.Response) => {
+    res.status(200).send({
+    oldBook: oldBook,
+    result: newBook,
+    });
+};
+
+export const getApiDocumentation = (
+    req: express.Request,
+    res: express.Response
+) => {
     const apiDocumentation = `
         <style>
             body { background-color: #333;
@@ -122,6 +128,6 @@ export const getApiDocumentation = (req: express.Request, res: express.Response)
                 <a href='/books'>/books</a> Get all books
             </li>
         </ul>
-    `
+    `;
     res.send(apiDocumentation);
-}
+};
