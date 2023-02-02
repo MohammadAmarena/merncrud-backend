@@ -1,4 +1,4 @@
-@url = http://localhost:3013
+@url = http://localhost:3012
 
 ### get Api
 {{url}}
@@ -10,4 +10,4 @@ GET {{url}}/books
 GET {{url}}/books/62c3fca5997884b0fdda41ac
 
 ### DeleteBook
-DELETE {{url}}/bokks/id
+DELETE {{url}}/books/62c3fca5997884b0fdda4128

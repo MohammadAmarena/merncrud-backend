@@ -11,6 +11,6 @@ router.get('/books', model.getBooks);
 
 router.get('/books/:id', model.getBook);
 
-router.get('/books/:id', model.deleteBook);
+router.delete('/books/:id', model.deleteBook);
 
 export default router

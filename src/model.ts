@@ -44,8 +44,8 @@ export const getBook = async (req: express.Request, res: express.Response) => {
 
 export const deleteBook = async (req: express.Request, res: express.Response) => {
     const id = req.params.id
-    const book = await Book.findOne({ _id: id })
-    book ? res.send(`Book with id ${id} has been deleted`) : res.send(`Book with id ${id} not found`)
+    const book = await Book.deleteOne({ _id: id })
+    book ? res.json(`book with id ${id} has been deleted`) : res.send('Book not found')
 }
 
 export const getApiDocumentation = (req: express.Request, res: express.Response) => {
