@@ -8,10 +8,6 @@ import booksRouter from './routes/books.js'
 const app = express()
 
 app.use('/', booksRouter)
-app.use(express.json());
-app.use(cors({
-    origin: '*'
-}));
 
 mongoose.set('strictQuery', false)
 model.connection()

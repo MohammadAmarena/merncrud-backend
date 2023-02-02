@@ -48,6 +48,16 @@ export const deleteBook = async (req: express.Request, res: express.Response) =>
     book ? res.json(`book with id ${id} has been deleted`) : res.send('Book not found')
 }
 
+export const addBook = async (req: express.Request, res: express.Response) => {
+    const rowBook: IBook = req.body
+    const book = new Promise(async (resolve, reject) => {
+		const docBook = new Book(rowBook);
+		const addedDocBook = await docBook.save();
+		resolve(addedDocBook.toObject({ versionKey: false }));
+	});
+    res.send(await book)
+}
+
 export const getApiDocumentation = (req: express.Request, res: express.Response) => {
     const apiDocumentation = `
         <style>
