@@ -9,7 +9,10 @@ const app = express()
 
 app.use('/', booksRouter)
 
-app.use(cors())
+app.use(express.json());
+app.use(cors({
+    origin: '*'
+}));
 
 mongoose.set('strictQuery', false)
 model.connection()

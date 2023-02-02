@@ -33,7 +33,19 @@ export const getBooks = async (req: express.Request, res: express.Response) => {
 			console.error(e);
 		}
 	})
-    res.json(await book)
+    res.send(await book)
+}
+
+export const getBook = async (req: express.Request, res: express.Response) => {
+    const id = req.params.id
+    const book = await Book.findOne({ _id: id })
+    book ? res.json(book) : res.send('Book not found')
+}
+
+export const deleteBook = async (req: express.Request, res: express.Response) => {
+    const id = req.params.id
+    const book = await Book.findOne({ _id: id })
+    book ? res.send(`Book with id ${id} has been deleted`) : res.send(`Book with id ${id} not found`)
 }
 
 export const getApiDocumentation = (req: express.Request, res: express.Response) => {

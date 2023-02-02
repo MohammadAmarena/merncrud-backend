@@ -1,7 +1,13 @@
-@url = http://localhost:3001
+@url = http://localhost:3013
 
 ### get Api
 {{url}}
 
 ### get Books
-{{url}}/book
+GET {{url}}/books
+
+### get Book
+GET {{url}}/books/62c3fca5997884b0fdda41ac
+
+### DeleteBook
+DELETE {{url}}/bokks/id
