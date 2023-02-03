@@ -3,8 +3,6 @@ import { IBook } from './interfaces.js';
 import express, { application } from 'express';
 import mongoose from 'mongoose';
 import * as config from './config.js';
-import session from 'express-session';
-import cookieParser from 'cookie-parser';
 declare module 'express-session' {
     export interface SessionData {
     user: { [key: string]: any };
