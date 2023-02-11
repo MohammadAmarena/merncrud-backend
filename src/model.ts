@@ -67,10 +67,7 @@ export const getBook = async (req: express.Request, res: express.Response) => {
     book ? res.json(book) : res.send('Book not found');
 };
 
-export const deleteBook = async (
-    req: express.Request,
-    res: express.Response
-) => {
+export const deleteBook = async (req: express.Request, res: express.Response ) => {
     const id = req.params.id;
     const book = await Book.deleteOne({ _id: id });
     book
